@@ -1,0 +1,51 @@
+.topbar {
+  height: 4.5rem;
+  background: violet;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  font-family: 'Ubuntu', 'sans-serif';
+}
+
+.left,
+.right {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-icons {
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.center {
+  flex: 6;
+}
+
+.list {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.list-item {
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.search-icon {
+  margin-left: 1rem;
+}
