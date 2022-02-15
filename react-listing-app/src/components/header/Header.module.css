@@ -1,0 +1,23 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: 8rem;
+  top: 15%;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  top: 12%;
+}
+
+.img {
+  width: 100%;
+  height: 60vh;
+  object-fit: cover;
+}

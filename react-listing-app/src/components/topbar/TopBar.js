@@ -5,10 +5,10 @@ const TopBar = () => {
   return (
     <div className={styles.topbar}>
       <div className={styles.left}>
-        <i className={`${styles['social-icons']} fa-brands fa-facebook`}></i>
-        <i className={`${styles['social-icons']} fa-brands fa-instagram`}></i>
-        <i className={`${styles['social-icons']} fa-brands fa-linkedin`}></i>
-        <i className={`${styles['social-icons']} fa-brands fa-twitter`}></i>
+        <i className={`${styles['social-icon']} fa-brands fa-facebook`}></i>
+        <i className={`${styles['social-icon']} fa-brands fa-instagram`}></i>
+        <i className={`${styles['social-icon']} fa-brands fa-linkedin`}></i>
+        <i className={`${styles['social-icon']} fa-brands fa-twitter`}></i>
       </div>
       <div className={styles.center}>
         <ul className={styles.list}>
