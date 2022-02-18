@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './TopBar.module.css';
 
 const TopBar = () => {
@@ -12,10 +13,14 @@ const TopBar = () => {
       </div>
       <div className={styles.center}>
         <ul className={styles.list}>
-          <li className={styles['list-item']}>HOME</li>
+          <Link to="/" className={styles['list-item']}>
+            HOME
+          </Link>
           <li className={styles['list-item']}>ABOUT</li>
           <li className={styles['list-item']}>CONTACT</li>
-          <li className={styles['list-item']}>CREATE LISTING</li>
+          <Link to="/create" className={styles['list-item']}>
+            CREATE LISTRING
+          </Link>
           <li className={styles['list-item']}>LOG OUT</li>
         </ul>
       </div>

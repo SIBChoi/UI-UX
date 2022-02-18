@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  padding: 4rem;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  font-size: 2.2rem;
+  color: var(--primary-color);
+  width: 4rem;
+  height: 4rem;
+  border: 0.3rem solid var(--primary-color);
+  border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input {
+  width: 50vw;
+  height: 3rem;
+  border: none;
+  padding: 2rem;
+  font-size: 1.6rem;
+}
+
+.desc {
+  height: 6rem;
+}
+
+.btn {
+  width: 50vw;
+  height: 3rem;
+  border: none;
+  background-color: var(--primary-color);
+  color: #fff;
+  margin-top: 1rem;
+}

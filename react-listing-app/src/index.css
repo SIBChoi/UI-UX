@@ -19,3 +19,10 @@ html {
 .flex {
   display: flex;
 }
+
+a:visited,
+a:link {
+  text-decoration: none;
+  color: #000;
+  cursor: pointer;
+}
