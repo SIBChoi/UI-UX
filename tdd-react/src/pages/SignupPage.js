@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Input from '../components/Input';
+import Alert from '../components/Alert';
+import Spinner from '../components/Spinner';
 
 const SignupPage = () => {
   const [userInfo, setUserInfo] = useState({
@@ -8,15 +11,21 @@ const SignupPage = () => {
     password: '',
     passwordRepeat: '',
   });
-  const [apiProgress, setApiProgress] = useState(false);
+  const [apiProgress, setApiProgress] = useState(null);
   const [signupSuccess, setSignupSuccess] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const { username, email, password, passwordRepeat } = userInfo;
 
+  let passwordMismatch = password !== passwordRepeat ? 'Password mismatch' : '';
   let disabled = true;
 
   const onChange = ({ target }) => {
     const { id, value } = target;
+    setErrors((prev) => {
+      prev[id] = '';
+      return { ...prev };
+    });
     setUserInfo((before) => {
       before[id] = value;
       return { ...before };
@@ -30,21 +39,24 @@ const SignupPage = () => {
       email,
       password,
     };
-    setApiProgress((prev) => !prev);
+    setApiProgress(true);
     try {
       await axios.post('/api/1.0/users', body);
-      setSignupSuccess((prev) => !prev);
+      setSignupSuccess(true);
     } catch (err) {
-      setApiProgress((prev) => !prev);
-      console.error(err);
+      if (err.response.status === 400) {
+        setErrors({ ...err.response.data.validationErrors });
+        setSignupSuccess(false);
+      }
     }
+    setApiProgress(false);
   };
   if (password && passwordRepeat) {
     disabled = password !== passwordRepeat;
   }
 
   return (
-    <div>
+    <div data-testid="signup-page">
       {!signupSuccess && (
         <div className="card mt-5 col-xl-6 offset-xl-3 col-md-8 offset-md-4">
           <form data-testid="form-sign-up">
@@ -52,48 +64,33 @@ const SignupPage = () => {
               <h1>Sign up</h1>
             </div>
             <div className="card-body">
-              <div className="mb-3">
-                <label htmlFor="username" className="form-label">
-                  Username
-                </label>
-                <input
-                  className="form-control"
-                  id="username"
-                  onChange={onChange}
-                ></input>
-              </div>
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  E-mail
-                </label>
-                <input
-                  className="form-control"
-                  id="email"
-                  onChange={onChange}
-                ></input>
-              </div>
-              <div className="mb-3">
-                <label htmlFor="password" className="form-label">
-                  Password
-                </label>
-                <input
-                  className="form-control"
-                  id="password"
-                  type="password"
-                  onChange={onChange}
-                ></input>
-              </div>
-              <div className="mb-3">
-                <label htmlFor="passwordRepeat" className="form-label">
-                  Password Repeat
-                </label>
-                <input
-                  className="form-control"
-                  id="passwordRepeat"
-                  type="password"
-                  onChange={onChange}
-                ></input>
-              </div>
+              <Input
+                id="username"
+                label="Username"
+                onChange={onChange}
+                help={errors.username}
+              />
+              <Input
+                id="email"
+                label="E-mail"
+                onChange={onChange}
+                help={errors.email}
+                type="email"
+              />
+              <Input
+                id="password"
+                label="Password"
+                onChange={onChange}
+                help={errors.password}
+                type="password"
+              />
+              <Input
+                id="passwordRepeat"
+                label="Password Repeat"
+                onChange={onChange}
+                help={passwordMismatch}
+                type="password"
+              />
             </div>
             <div className="text-center">
               <button
@@ -101,13 +98,7 @@ const SignupPage = () => {
                 disabled={disabled || apiProgress}
                 onClick={submit}
               >
-                {apiProgress && (
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                )}
+                {apiProgress && <Spinner size="sm" />}
                 Sign up
               </button>
             </div>
@@ -115,9 +106,7 @@ const SignupPage = () => {
         </div>
       )}
       {signupSuccess && (
-        <div className="alert alert-success mt-5">
-          Please chekc your E-mail to activate your account
-        </div>
+        <Alert>Please check your E-mail to activate your account</Alert>
       )}
     </div>
   );
