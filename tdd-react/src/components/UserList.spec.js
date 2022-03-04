@@ -144,4 +144,10 @@ describe('User List', () => {
     const firstPageUser = await screen.findByText('user1');
     expect(firstPageUser).toBeInTheDocument();
   });
+  it('displays spinner during the api call is in progress', async () => {
+    setup();
+    const spinner = screen.getByRole('status', { hidden: true });
+    await screen.findByText('user1');
+    expect(spinner).not.toBeInTheDocument();
+  });
 });

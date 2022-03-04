@@ -25,6 +25,16 @@ const server = setupServer(
         totalPages: 0,
       })
     );
+  }),
+  rest.get('/api/1.0/users/:id', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        id: 1,
+        username: 'user1test',
+        email: 'user1@mail.com',
+        image: null,
+      })
+    );
   })
 );
 
@@ -119,7 +129,7 @@ describe('Routing', () => {
     setup('/');
     const userLink = await screen.findByText('app-test-user');
     userEvnet.click(userLink);
-    const target = await screen.findByText('17');
+    const target = await screen.findByText('user1test');
     expect(screen.getByTestId('user-page')).toBeInTheDocument();
     expect(target).toBeInTheDocument();
   });
