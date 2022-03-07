@@ -1,6 +1,6 @@
 // import axios from 'axios';
 import SignupPage from './SignupPage';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '../test/setup';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';

@@ -1,4 +1,4 @@
-import { screen, render } from '@testing-library/react';
+import { screen, render } from './test/setup';
 import App from './App';
 import userEvnet from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
@@ -14,7 +14,7 @@ const server = setupServer(
       ctx.json({
         content: [
           {
-            id: 17,
+            id: 5,
             username: 'app-test-user',
             email: 'app-test-user@mail.com',
             image: null,
@@ -27,14 +27,18 @@ const server = setupServer(
     );
   }),
   rest.get('/api/1.0/users/:id', (req, res, ctx) => {
+    const { id } = req.params;
     return res(
       ctx.json({
-        id: 1,
-        username: 'user1test',
-        email: 'user1@mail.com',
+        id,
+        username: 'user' + id,
+        email: 'user' + id + '@mail.com',
         image: null,
       })
     );
+  }),
+  rest.post('/api/1.0/auth', (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ username: 'user5', id: 5 }));
   })
 );
 
@@ -46,12 +50,12 @@ afterAll(() => {
   server.close();
 });
 
-describe('Routing', () => {
-  const setup = (path) => {
-    window.history.pushState({}, '', path);
-    render(<App />);
-  };
+const setup = (path) => {
+  window.history.pushState({}, '', path);
+  render(<App />);
+};
 
+describe('Routing', () => {
   it.each`
     path               | testId
     ${'/'}             | ${'home-page'}
@@ -129,9 +133,55 @@ describe('Routing', () => {
     setup('/');
     const userLink = await screen.findByText('app-test-user');
     userEvnet.click(userLink);
-    const target = await screen.findByText('user1test');
+    const target = await screen.findByText('user5');
     expect(screen.getByTestId('user-page')).toBeInTheDocument();
     expect(target).toBeInTheDocument();
+  });
+});
+
+describe('Login', () => {
+  const setupLoggedIn = () => {
+    setup('/login');
+    userEvnet.type(screen.getByLabelText('E-mail'), 'user5@mail.com');
+    userEvnet.type(screen.getByLabelText('Password'), 'P4ssword');
+    userEvnet.click(screen.getByRole('button', { name: 'Login' }));
+  };
+
+  it('navigates to homepage when login is success', async () => {
+    setupLoggedIn();
+    const page = await screen.findByTestId('home-page');
+    expect(page).toBeInTheDocument();
+  });
+  it('hides login and signup from navbar after successful login', async () => {
+    setupLoggedIn();
+    await screen.findByTestId('home-page');
+    const signupLink = screen.queryByRole('link', { name: 'Sign up' });
+    const loginLink = screen.queryByRole('link', { name: 'Login' });
+
+    expect(signupLink).not.toBeInTheDocument();
+    expect(loginLink).not.toBeInTheDocument();
+  });
+  it('displays My Profile link on navbar afer successful login', async () => {
+    setup('/login');
+    const myProfileLinkBeforeLogin = screen.queryByRole('link', {
+      name: 'My Profile',
+    });
+    expect(myProfileLinkBeforeLogin).not.toBeInTheDocument();
+    userEvnet.type(screen.getByLabelText('E-mail'), 'user5@mail.com');
+    userEvnet.type(screen.getByLabelText('Password'), 'P4ssword');
+    userEvnet.click(screen.getByRole('button', { name: 'Login' }));
+    await screen.findByTestId('home-page');
+    const myProfileLinkAfter = screen.getByRole('link', { name: 'My Profile' });
+    expect(myProfileLinkAfter).toBeInTheDocument();
+  });
+  it('displays user page with logged in user id in url after clicking My Profile link', async () => {
+    setupLoggedIn();
+    await screen.findByTestId('home-page');
+    const myProfileLink = screen.getByRole('link', { name: 'My Profile' });
+    userEvnet.click(myProfileLink);
+    await screen.findByTestId('user-page');
+    const username = await screen.findByText('user5');
+    expect(username).toBeInTheDocument();
   });
 });
 

@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../state/AuthContextWrapper';
 import { getUserById } from '../api/apicalls';
+import ProfileCard from '../components/ProfileCard';
 
 const User = ({ match }) => {
+  const auth = useContext(AuthContext);
   const [user, setUser] = useState({});
   const { id } = match.params;
 
@@ -16,8 +19,7 @@ const User = ({ match }) => {
 
   return (
     <div data-testid="user-page">
-      <h1>User Page</h1>
-      <h2>{user.username}</h2>
+      <ProfileCard user={user} auth={auth} />
     </div>
   );
 };
