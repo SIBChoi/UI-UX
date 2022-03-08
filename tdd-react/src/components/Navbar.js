@@ -1,10 +1,8 @@
-import { useContext } from 'react';
-import { AuthContext } from '../state/AuthContextWrapper';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const auth = useContext(AuthContext);
-
+  const auth = useSelector((state) => state);
   return (
     <nav
       className="navbar navbar-expand navbar-light bg-light shadow-sm"

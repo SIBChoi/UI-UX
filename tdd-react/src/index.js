@@ -3,15 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import AuthContextWrapper from './state/AuthContextWrapper';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import createStore from './state';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <AuthContextWrapper>
+      <Provider store={createStore()}>
         <App />
-      </AuthContextWrapper>
+      </Provider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

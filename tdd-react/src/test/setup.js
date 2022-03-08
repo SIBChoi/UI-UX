@@ -1,11 +1,12 @@
 import { render } from '@testing-library/react';
-import AuthContextWrapper from '../state/AuthContextWrapper';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import createStore from '../state';
 
 const AllTheProviders = ({ children }) => {
   return (
     <Router>
-      <AuthContextWrapper>{children}</AuthContextWrapper>
+      <Provider store={createStore()}>{children}</Provider>
     </Router>
   );
 };

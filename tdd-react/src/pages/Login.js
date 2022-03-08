@@ -1,25 +1,28 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import Alert from '../components/Alert';
 import { login } from '../api/apicalls';
-import { AuthContext } from '../state/AuthContextWrapper';
+import { LOGINSUCCESS } from '../state/AuthReducer';
+import { useHistory } from 'react-router-dom';
 
-const Login = ({ history }) => {
+const Login = () => {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [apiProgress, setApiProgress] = useState(null);
   const [failMsg, setFailMsg] = useState();
 
   const { email, password } = loginForm;
 
-  const auth = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const submit = async (e) => {
     e.preventDefault();
     setApiProgress(true);
     try {
       const response = await login({ email, password });
-      auth.loginHandler(response.data.id);
+      dispatch({ type: LOGINSUCCESS, payload: { ...response.data } });
       history.push('/');
     } catch (error) {
       const { message } = error.response.data;

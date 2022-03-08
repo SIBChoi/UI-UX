@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import Login from './Login';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
+import storage from '../state/storage';
 
 describe('Login page', () => {
   describe('Layout', () => {
@@ -58,11 +59,11 @@ describe('Login page', () => {
     afterAll(() => server.close());
 
     let button, emailInput, passwordInput;
-    const setup = () => {
+    const setup = (email = 'user100@mail.com') => {
       render(<Login />);
       emailInput = screen.getByLabelText('E-mail');
       passwordInput = screen.getByLabelText('Password');
-      userEvent.type(emailInput, 'user100@mail.com');
+      userEvent.type(emailInput, email);
       userEvent.type(passwordInput, 'P4ssword');
       button = screen.getByRole('button', { name: 'Login' });
     };
@@ -120,5 +121,24 @@ describe('Login page', () => {
         expect(failMsg).not.toBeInTheDocument();
       }
     );
+    it('stores id, username, image in storage', async () => {
+      server.use(
+        rest.post('/api/1.0/auth', (req, res, ctx) => {
+          return res(
+            ctx.status(200),
+            ctx.json({ id: 5, username: 'user5', image: null })
+          );
+        })
+      );
+      setup('user5@mail.com');
+      userEvent.click(button);
+      const spinner = screen.queryByRole('status', { hidden: true });
+      await waitForElementToBeRemoved(spinner);
+      const storedState = storage.getItem('auth');
+      const key = Object.keys(storedState);
+      expect(key.includes('id')).toBeTruthy();
+      expect(key.includes('username')).toBeTruthy();
+      expect(key.includes('image')).toBeTruthy();
+    });
   });
 });
